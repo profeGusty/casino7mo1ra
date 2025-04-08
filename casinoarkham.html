@@ -1,0 +1,676 @@
+l<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Arkham - La experiencia de juego definitiva</title>
+    <style>
+        :root {
+            --primary-color: #1e0933;
+            --secondary-color: #4a0e67;
+            --accent-color: #9933cc;
+            --gold: #d4af37;
+            --text-light: #f0f0f0;
+            --text-dark: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+          background-image: url(https://images.unsplash.com/photo-1585430392800-a5526118774e?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+            
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .loading-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loading-logo {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(153, 51, 204, 0.7);
+        }
+        
+        .loading-logo span {
+            color: var(--accent-color);
+        }
+        
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 5px solid rgba(153, 51, 204, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loading-progress {
+            width: 200px;
+            height: 3px;
+            background-color: rgba(153, 51, 204, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-color);
+            transition: width 0.5s ease;
+        }
+        
+        .loading-text {
+            font-size: 16px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Main Content */
+        .main-content {
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        .content-visible {
+            opacity: 1;
+        }
+        
+        /* Header */
+        header {
+            
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .logo span {
+            color: var(--accent-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login {
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+        }
+        
+        .btn-register {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero {
+           
+            background-size: cover;
+            background-position: center;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .hero .btn {
+            padding: 15px 30px;
+            font-size: 18px;
+        }
+        
+        /* Games Section */
+        .games {
+            padding: 80px 0;
+            background-color: var(--secondary-color);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--gold);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .game-card {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .game-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .game-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .game-card:hover .game-image img {
+            transform: scale(1.1);
+        }
+        
+        .game-content {
+            padding: 20px;
+        }
+        
+        .game-content h3 {
+            color: var(--gold);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+        .game-content p {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .btn-play {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-play:hover {
+            background-color: var(--gold);
+            color: var(--text-dark);
+        }
+        
+        /* Promotions Section */
+        .promotions {
+            padding: 80px 0;
+            background-color: var(--primary-color);
+        }
+        
+        .promo-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .promo-card {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .promo-card h3 {
+            color: var(--gold);
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .promo-card .promo-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin: 20px 0;
+        }
+        
+        .promo-card p {
+            margin-bottom: 20px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-bottom p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                margin: 20px 0;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">Arkham <span>Casino</span></div>
+        <div class="loading-spinner"></div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar" id="progressBar"></div>
+        </div>
+        <div class="loading-text" id="loadingText">Cargando... 0%</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Header -->
+        <header>
+            <div class="container header-content">
+                <div class="logo">Arkham <span>Casino</span></div>
+                <nav>
+                    <ul>
+                        <li><a href="#">Inicio</a></li>
+                        <li><a href="#">Juegos</a></li>
+                        <li><a href="#">Promociones</a></li>
+                        <li><a href="#">VIP</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button class="btn btn-login">Iniciar Sesión</button>
+                    <button class="btn btn-register">Registrarse</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container hero-content">
+                <h1>Bienvenido al Casino Arkham</h1>
+                <p>Donde los misterios y la fortuna se encuentran. Disfruta de la experiencia de juego más inmersiva y escalofriante de la ciudad.</p>
+                <button class="btn btn-register">JUEGA AHORA</button>
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section class="games">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Nuestros Juegos</h2>
+                    <p>Explora nuestra amplia selección de juegos y desafía tu suerte</p>
+                </div>
+                <div class="games-grid">
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="tragate.jpg" alt="Tragamonedas">
+                        </div>
+                        <div class="game-content">
+                            <h3>Máquinas Tragamonedas</h3>
+                            <p>Disfruta de cientos de tragamonedas con temáticas misteriosas y grandes premios.</p>
+                            <a href="#" class="btn-play">JUGAR AHORA</a>
+                        </div>
+                    </div>
+                    
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="rueteichon.jpg" alt="Ruleta">
+                        </div>
+                        <div class="game-content">
+                            <h3>Ruleta Arkham</h3>
+                            <p>Nuestra ruleta especial con un toque sobrenatural y oportunidades únicas.</p>
+                            <a href="#" class="btn-play">JUGAR AHORA</a>
+                        </div>
+                    </div>
+                    
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="blackjack.jpg" alt="Blackjack">
+                        </div>
+                        <div class="game-content">
+                            <h3>Blackjack </h3>
+                            <p>Desafía al crupier en esta versión única con cartas especiales y bonificaciones.</p>
+                            <a href="#" class="btn-play">JUGAR AHORA</a>
+                        </div>
+                    </div>
+                    
+                    <div class="game-card">
+                        <div class="game-image">
+                            <img src="pokermannn.jpg" alt="Poker">
+                        </div>
+                        <div class="game-content">
+                            <h3>Póker</h3>
+                            <p>Compite contra otros jugadores en nuestras mesas de póker con un giro aterrador.</p>
+                            <a href="#" class="btn-play">JUGAR AHORA</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Promotions Section -->
+        <section class="promotions">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Promociones Especiales</h2>
+                    <p>Aprovecha nuestras increíbles ofertas para maximizar tu experiencia</p>
+                </div>
+                <div class="promo-cards">
+                    <div class="promo-card">
+                        <h3>Bono de Bienvenida</h3>
+                        <div class="promo-value">200%</div>
+                        <p>Duplica tu primer depósito y recibe 50 giros gratis en nuestras máquinas exclusivas.</p>
+                        <a href="#" class="btn-play">RECLAMAR</a>
+                    </div>
+                    
+                    <div class="promo-card">
+                        <h3>Noche de Misterio</h3>
+                        <div class="promo-value">50% EXTRA</div>
+                        <p>Todos los viernes, recibe un 50% extra en tu depósito y participa en torneos especiales.</p>
+                        <a href="#" class="btn-play">PARTICIPAR</a>
+                    </div>
+                    
+                    <div class="promo-card">
+                        <h3>Club VIP Arkham</h3>
+                        <div class="promo-value">EXCLUSIVO</div>
+                        <p>Únete a nuestro programa VIP y disfruta de beneficios personalizados y atención preferencial.</p>
+                        <a href="#" class="btn-play">UNIRSE</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <h3>Casino Arkham</h3>
+                        <p>El lugar donde los misterios y la fortuna se encuentran para ofrecerte la experiencia de juego más inmersiva y escalofriante.</p>
+                        <div class="social-icons">
+                            <a href="#"><span>f</span></a>
+                            <a href="#"><span>t</span></a>
+                            <a href="#"><span>in</span></a>
+                            <a href="https://www.instagram.com/casinoarkham?igsh=MTdic29senRINVyeQ%3D%3D&utm_source=qr"><span>ig</span></a>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Enlaces Rápidos</h3>
+                        <ul>
+                            <li><a href="#">Inicio</a></li>
+                            <li><a href="#">Juegos</a></li>
+                            <li><a href="#">Promociones</a></li>
+                            <li><a href="#">VIP</a></li>
+                            <li><a href="#">Sobre Nosotros</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Juegos Populares</h3>
+                        <ul>
+                            <li><a href="#">Tragamonedas</a></li>
+                            <li><a href="#">Ruleta</a></li>
+                            <li><a href="#">Blackjack</a></li>
+                            <li><a href="#">Póker</a></li>
+                            <li><a href="#">Baccarat</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Ayuda & Soporte</h3>
+                        <ul>
+                            <li><a href="#">Preguntas Frecuentes</a></li>
+                            <li><a href="#">Términos y Condiciones</a></li>
+                            <li><a href="#">Política de Privacidad</a></li>
+                            <li><a href="#">Juego Responsable</a></li>
+                            <li><a href="#">Contacto</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Casino Arkham. Todos los derechos reservados. Juega con responsabilidad.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Loading Screen Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const mainContent = document.getElementById('mainContent');
+            const progressBar = document.getElementById('progressBar');
+            const loadingText = document.getElementById('loadingText');
+            
+            // Simulate loading progress
+            let progress = 0;
+            const loadingInterval = setInterval(function() {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = progress + '%';
+                loadingText.textContent = 'Cargando... ' + Math.round(progress) + '%';
+                
+                if (progress === 100) {
+                    clearInterval(loadingInterval);
+                    
+                    // Pequeña pausa antes de ocultar la pantalla de carga
+                    setTimeout(function() {
+                        loadingScreen.classList.add('loading-hidden');
+                        mainContent.classList.add('content-visible');
+                    }, 500);
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>
